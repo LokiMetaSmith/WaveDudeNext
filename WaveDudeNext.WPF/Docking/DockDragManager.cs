@@ -119,9 +119,17 @@ internal sealed class DockDragManager
 		e.Handled = true;
 	}
 
+	/// <summary>
+	/// Ends the drag when the host loses the capture it took for it (another window activated, say). The event bubbles,
+	/// so a descendant's loss arrives here too, and one of them is the drag's own doing: a tab strip is a list box, which
+	/// captures the mouse at the press on a tab, and loses that capture to the host inside the <c>Mouse.Capture</c> call
+	/// that starts the drag. Taken for the drag's end, it cleared the state that call's caller went on to use, and
+	/// pulling a tab out of its group took the app down (2026-11-06); a drag by the title bar, which captures nothing,
+	/// never met it.
+	/// </summary>
 	private void OnLostMouseCapture(object sender, MouseEventArgs e)
 	{
-		if (_dragging && !_finishing)
+		if (_dragging && !_finishing && ReferenceEquals(e.OriginalSource, _host))
 		{
 			Finish();
 		}
