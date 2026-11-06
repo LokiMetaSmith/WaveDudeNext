@@ -796,7 +796,10 @@ version. It is distributed WITHOUT ANY WARRANTY. See the LICENSE.md file or
 			<Setter.Value>
 				<Style TargetType="{x:Type ListBoxItem}">
 					<Setter Property="Foreground" Value="{DynamicResource ToolTabForeground}" />
-					<Setter Property="Padding" Value="6,2" />
+					<!-- a tab is 23 px high, as a tree row, a toolbar button and a menu entry are, its text centred the same way
+					     (4 px above, 3 and the border's 1 below) and 10 px from the tab's edge, the side border included
+					     (2026-11-06, the user's request: at 6,2 the tabs were 20 px high and stood cramped) -->
+					<Setter Property="Padding" Value="9,4,9,3" />
 					<Setter Property="Template">
 						<Setter.Value>
 							<ControlTemplate TargetType="{x:Type ListBoxItem}">
