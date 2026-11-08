@@ -103,7 +103,16 @@ public sealed class GpuWaveSimulator : IWaveEngine, IDisposable
 	public static GpuWaveSimulator? TryCreate(SceneData scene, EngineOptions options, IReadOnlyList<Emitter>? emitters, out string problems)
 	{
 		problems = "";
-		List<GpuDeviceInfo> devices = GpuDeviceInfo.FindAll();
+		List<GpuDeviceInfo> devices;
+		try
+		{
+			devices = GpuDeviceInfo.FindAll();
+		}
+		catch (Exception ex) when (ex is DllNotFoundException or EntryPointNotFoundException or BadImageFormatException)
+		{
+			problems = "OpenCL runtime library not found";
+			return null;
+		}
 		if (devices.Count == 0)
 		{
 			problems = "no GPU found through OpenCL" + ((IntPtr.Size == 4) ? " (this is a 32-bit process; run the 64-bit build)" : "");
